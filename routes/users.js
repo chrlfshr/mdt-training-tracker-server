@@ -100,7 +100,7 @@ router.route('/:id')
       );
   })
 
-  router.route(/:id/modules)
+  router.route('/:id/modules')
     .get((req, res) => {
       db.select('*').from('modules_users').where('user_id', '=', req.params.id)
         .then((data) => res.status(200).json(data))
@@ -121,5 +121,44 @@ router.route('/:id')
       })
     );
   })
+
+  router.route('/account/:username/modules')
+    .get((req,res) => {
+      db
+      .select('*')
+      .from('users')
+      .where('username', '=', req.params.username)
+      .then((data) => {
+        db.select('*').from('modules_users').where('user_id', '=', data[0].id)
+          .then(result => res.status(200).json(result));
+      })
+      .catch(err =>
+        res.status(404).json({
+          message:
+            'Could not GET user data.'
+        })
+      );
+    })
+
+  router.route('/account/:username/overview')
+    .get((req, res) => {
+      let p1 = db.select('*').from('users').where('username', '=', `${req.params.username}`);
+      let p2 = db.select('*').from('crews').innerJoin('users', function() {
+        this.on('users.username', '=', db.raw('?', [`${req.params.username}`])).andOn('users.crew_id', '=', 'crews.id');
+      });
+      let p3 = db.select('*').from('modules_users').innerJoin('users', function() {
+        this.on('users.username', '=', db.raw('?', [`${req.params.username}`])).andOn('modules_users.user_id', '=', 'users.id');
+      });
+      Promise.all([p1, p2, p3])
+      .then((data) => res.status(200).json(data))
+      .catch(err => {
+        console.log(err);
+          res.status(404).json({
+            message:
+              'Could not GET user data.'
+          });
+        }
+      );
+    })
 
 module.exports = router;
