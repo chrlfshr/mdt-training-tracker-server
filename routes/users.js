@@ -100,6 +100,13 @@ router.route('/:id')
       );
   })
 
+  router.route(/:id/modules)
+    .get((req, res) => {
+      db.select('*').from('modules_users').where('user_id', '=', req.params.id)
+        .then((data) => res.status(200).json(data))
+        .catch(err => res.status(404).json({message: 'Could not GET user modules.'}));
+    });
+
   router.route('/account/:username')
   .get((req,res) => {
     db
