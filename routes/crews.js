@@ -99,6 +99,22 @@ router.route('/:id')
       );
   })
 
+  router.route('/:id/members')
+  .get((req,res) => {
+    db
+    .select(db.raw('users.*')).from('users').innerJoin('crews', function() {
+      this.on('crews.id', '=', db.raw('?', [`${req.params.id}`])).andOn('users.crew_id', '=', 'crews.id');
+    })
+    .then((data) => res.status(200).json(data))
+    .catch(err => {
+      console.log(err);
+      res.status(404).json({
+        message:
+          'Could not GET crew data.'
+      })
+    });
+  })
+
 // router.param('id', (req, res, next, id) => {
 
 //   next();

@@ -225,11 +225,15 @@ router.route('/:id')
       let p2 = db.select('crews.id', 'crews.name').from('crews').innerJoin('users', function() {
         this.on('users.username', '=', db.raw('?', [`${req.params.username}`])).andOn('users.crew_id', '=', 'crews.id');
       });
-      let p3 = db.select('*').from('modules_users').innerJoin('users', function() {
+      let p3 = db.select(db.raw('modules_users.*, modules.name, modules.operator_level')).from('modules_users').innerJoin('users', function() {
         this.on('users.username', '=', db.raw('?', [`${req.params.username}`])).andOn('modules_users.user_id', '=', 'users.id');
+      }).innerJoin('modules', function() {
+        this.on('modules.id', '=', 'modules_users.module_id');
       });
-      let p4 = db.select('*').from('tasks_users').innerJoin('users', function() {
+      let p4 = db.select(db.raw('tasks_users.*, tasks.*')).from('tasks_users').innerJoin('users', function() {
         this.on('users.username', '=', db.raw('?', [`${req.params.username}`])).andOn('tasks_users.user_id', '=', 'users.id');
+      }).innerJoin('tasks', function() {
+        this.on('tasks.id', '=', 'tasks_users.task_id');
       });
       Promise.all([p1, p2, p3, p4])
       .then((dataSet) => {
