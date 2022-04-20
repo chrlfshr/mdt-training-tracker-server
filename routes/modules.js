@@ -20,16 +20,21 @@ router.route('/')
   })
   .post((req,res) => {
     db
-      .insert(req.body)
+      .insert({
+        name: req.body.name,
+        operator_level: req.body.operator_level,
+        is_approved: req.body.is_approved
+      })
       .returning('*')
       .into('modules')
       .then((data) => res.status(201).json(data))
-      .catch(err =>
+      .catch(err => {
+        console.log(err);
         res.status(404).json({
           message:
             'Could not POST modules data.'
         })
-      );
+      });
   })
 
 router.route('/:id')
@@ -97,7 +102,7 @@ router.route('/:id')
   })
 
 // router.param('id', (req, res, next, id) => {
-  
+
 //   next();
 // })
 

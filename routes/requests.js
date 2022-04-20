@@ -20,7 +20,12 @@ router.route('/')
   })
   .post((req,res) => {
     db
-      .insert(req.body)
+      .insert({
+        name: req.body.name,
+        is_submitted: req.body.is_submitted,
+        description: req.body.description,
+        module_id: req.body.module_id
+      })
       .returning('*')
       .into('requests')
       .then((data) => res.status(201).json(data))
@@ -98,7 +103,7 @@ router.route('/:id')
   })
 
 // router.param('id', (req, res, next, id) => {
-  
+
 //   next();
 // })
 

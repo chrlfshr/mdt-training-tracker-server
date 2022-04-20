@@ -20,16 +20,23 @@ router.route('/')
   })
   .post((req,res) => {
     db
-      .insert(req.body)
+      .insert({
+        name: req.body.name,
+        description: req.body.description,
+        link: req.body.link,
+        special_instructions: req.body.special_instructions,
+        module_id: req.body.module_id
+      })
       .returning('*')
       .into('tasks')
       .then((data) => res.status(201).json(data))
-      .catch(err =>
+      .catch(err => {
+        console.log(err);
         res.status(404).json({
           message:
             'Could not POST tasks data.'
         })
-      );
+      });
   })
 
 router.route('/:id')
@@ -99,7 +106,7 @@ router.route('/:id')
   })
 
 // router.param('id', (req, res, next, id) => {
-  
+
 //   next();
 // })
 

@@ -11,25 +11,30 @@ router.route('/')
       .select('*')
       .from('crews')
       .then((data) => res.status(200).json(data))
-      .catch(err =>
+      .catch(err => {
+        console.log(err);
         res.status(404).json({
           message:
             'Could not GET crews data.'
         })
+      }
       );
   })
   .post((req,res) => {
     db
-      .insert(req.body)
+      .insert({
+        name: req.body.name
+      })
       .returning('*')
       .into('crews')
       .then((data) => res.status(201).json(data))
-      .catch(err =>
+      .catch(err => {
+        console.log(err);
         res.status(404).json({
           message:
             'Could not POST crews data.'
         })
-      );
+      });
   })
 
 router.route('/:id')
@@ -95,7 +100,7 @@ router.route('/:id')
   })
 
 // router.param('id', (req, res, next, id) => {
-  
+
 //   next();
 // })
 
