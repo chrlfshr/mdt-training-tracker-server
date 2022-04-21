@@ -25,3 +25,5 @@ app.use('/tasks', tasksRouter);
 app.listen(PORT, () => {
   console.log(`Express Server is listening on port ${PORT}.`);
 })
+
+module.exports = app;
