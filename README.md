@@ -105,4 +105,3 @@ Training revisions can be accessed through the `/requests/` endpoint.
     - POST to open a new request
 - `/requests/<id>/` - Access information regarding a specific request
     - GET, PUT, PATCH, DELETE functionality
-
